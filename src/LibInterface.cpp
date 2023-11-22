@@ -19,3 +19,22 @@ bool LibInterface::init(const char * sFileName)
 
   return true;
 }
+
+bool Set4LibInterfaces::init() 
+{
+  std::string libs[] = {"libInterp4Set", "libInterp4Move"};
+  std::string lib_path;
+  for (size_t i = 0; i < sizeof(libs) / sizeof(libs[0]); i++)
+  {
+    std::shared_ptr<LibInterface> tmp(new LibInterface());
+    lib_path = libs[i] + ".so";
+    tmp->init(lib_path.c_str());
+    mSet.emplace(libs[i], tmp);
+  }
+  return true;
+}
+
+std::shared_ptr<LibInterface> Set4LibInterfaces::get_interface(std::string lib_name)
+{
+  return mSet[lib_name];
+}

@@ -1,38 +1,28 @@
 #include <iostream>
-#include <dlfcn.h>
+#include <sstream>
 #include <cassert>
-#include <map>
-#include <memory>
 #include "LibInterface.hh"
 
+#define LIMIT 1024
 using namespace std;
 
-
-class Set4LibInterfaces {
-  private:
-    map<string, shared_ptr<LibInterface>> mSet;
-  public:
-    bool init();
-    shared_ptr<LibInterface> get_interface(string lib_name);
-};
-
-bool Set4LibInterfaces::init() 
+bool ExecutePreprocessor(const char *sFileName, std::istringstream &issCommands)
 {
-  string libs[] = {"libInterp4Set", "libInterp4Move"};
-  string lib_path;
-  for (size_t i = 0; i < sizeof(libs) / sizeof(libs[0]); i++)
-  {
-    shared_ptr<LibInterface> tmp(new LibInterface());
-    lib_path = libs[i] + ".so";
-    tmp->init(lib_path.c_str());
-    mSet.emplace(libs[i], tmp);
+  string preprocessor = "cpp -P ";
+  ostringstream outStream;
+  char line_buffer[LIMIT];
+  
+  preprocessor += sFileName;
+  FILE *pProc = popen(preprocessor.c_str(), "r");
+
+  if (pProc) {
+    while (fgets(line_buffer, LIMIT, pProc))
+      outStream << line_buffer;
+    issCommands.str(outStream.str());
+    return pclose(pProc) == 0;
   }
-  return true;
-}
-
-shared_ptr<LibInterface> Set4LibInterfaces::get_interface(string lib_name)
-{
-  return mSet[lib_name];
+  
+  return false;  
 }
 
 void printPluginInfo(AbstractInterp4Command* pCmd){

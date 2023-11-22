@@ -3,6 +3,8 @@
 
 #include "AbstractInterp4Command.hh"
 #include <dlfcn.h>
+#include <map>
+#include <memory>
 
 class LibInterface {
     void * _pLibHnd = nullptr;
@@ -13,6 +15,12 @@ class LibInterface {
     AbstractInterp4Command *CreateCmd() {return _pCreateCmd(); }
 };
 
-
+class Set4LibInterfaces {
+  private:
+    std::map<string, shared_ptr<LibInterface>> mSet;
+  public:
+    bool init();
+    std::shared_ptr<LibInterface> get_interface(std::string lib_name);
+};
 
 #endif

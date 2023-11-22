@@ -17,7 +17,7 @@ class LibInterface {
 
 class Set4LibInterfaces {
   private:
-    std::map<string, shared_ptr<LibInterface>> mSet;
+    std::map<std::string, std::shared_ptr<LibInterface>> mSet;
   public:
     bool init();
     std::shared_ptr<LibInterface> get_interface(std::string lib_name);

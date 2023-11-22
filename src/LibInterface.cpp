@@ -22,7 +22,7 @@ bool LibInterface::init(const char * sFileName)
 
 bool Set4LibInterfaces::init() 
 {
-  std::string libs[] = {"libInterp4Set", "libInterp4Move"};
+  std::string libs[] = {"libInterp4Set", "libInterp4Move", "libInterp4Rotate", "libInterp4Pause"};
   std::string lib_path;
   for (size_t i = 0; i < sizeof(libs) / sizeof(libs[0]); i++)
   {

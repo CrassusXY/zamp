@@ -1,11 +1,50 @@
-#define ROTATE_SPEED 30
-/*
-* Przykładowy zestaw poleceń
-*/
-Set Ob_A 2 0 3 30 10 0 // Polozenie obiektu A
-Set Ob_B 10 10 3 0 0 20 // Polozenie obiektu B
-Rotate Ob_B OY ROTATE_SPEED 40
-Pause 1000 /* Zawieszenie działania na 1 sek. */
-Move Ob_A 10 10
-Rotate Ob_B OZ ROTATE_SPEED 60
-Move Ob_B 10 20
+#define ROTATE_SPEED     2
+
+BEGIN_PARALLEL_ACTIONS
+    Rotate Podstawa OZ ROTATE_SPEED 360
+END_PARALLEL_ACTIONS
+
+BEGIN_PARALLEL_ACTIONS
+    Pause 1000 /* Zawieszenie na 1 sek. */
+END_PARALLEL_ACTIONS
+
+BEGIN_PARALLEL_ACTIONS
+    Rotate Korpus.Canard1 OY 1 30
+    Rotate Korpus.Canard2 OY 1 30
+END_PARALLEL_ACTIONS
+
+BEGIN_PARALLEL_ACTIONS
+    Pause 1000 /* Zawieszenie na 1 sek. */
+END_PARALLEL_ACTIONS
+
+BEGIN_PARALLEL_ACTIONS
+    Rotate Korpus.Canard1 OY 1 330
+    Rotate Korpus.Canard2 OY 1 330
+END_PARALLEL_ACTIONS
+
+BEGIN_PARALLEL_ACTIONS
+    Pause 1000 /* Zawieszenie na 1 sek. */
+END_PARALLEL_ACTIONS
+
+BEGIN_PARALLEL_ACTIONS
+    Rotate Korpus OZ ROTATE_SPEED 360
+    Rotate Korpus.Stozek OZ ROTATE_SPEED 360
+    Rotate Korpus.Lotka1 OZ ROTATE_SPEED 360
+    Rotate Korpus.Lotka2 OZ ROTATE_SPEED 360
+    Rotate Korpus.Lotka3 OZ ROTATE_SPEED 360
+    Rotate Korpus.Lotka4 OZ ROTATE_SPEED 360
+END_PARALLEL_ACTIONS
+
+BEGIN_PARALLEL_ACTIONS
+    Pause 1000 /* Zawieszenie na 1 sek. */
+END_PARALLEL_ACTIONS
+
+BEGIN_PARALLEL_ACTIONS
+    Rotate Korpus OX ROTATE_SPEED 360
+    Rotate Korpus.Stozek OX ROTATE_SPEED 360
+    Rotate Korpus.Lotka1 OX ROTATE_SPEED 360
+    Rotate Korpus.Lotka2 OX ROTATE_SPEED 360
+    Rotate Korpus.Lotka3 OX ROTATE_SPEED 360
+    Rotate Korpus.Lotka4 OX ROTATE_SPEED 360
+END_PARALLEL_ACTIONS
+

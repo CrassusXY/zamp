@@ -1,40 +1,44 @@
 #include "LibInterface.hh"
 
-bool LibInterface::init(const char * sFileName)
+LibInterface::~LibInterface()
 {
-  _pLibHnd = dlopen(sFileName,RTLD_LAZY);
-  if (!_pLibHnd) {
-    std::cerr << "!!! Brak biblioteki: " << sFileName << std::endl;
-    return false;
-  }
-
-  void *pFun = dlsym(_pLibHnd,"CreateCmd");
-  
-  if (!pFun) {
-    std::cerr << "!!! Nie znaleziono funkcji CreateCmd" << std::endl;
-    return 1;
-  }
-  
-  _pCreateCmd = reinterpret_cast<AbstractInterp4Command* (*)(void)>(pFun);
-
-  return true;
+    dlclose(_LibHandler);
 }
 
-bool Set4LibInterfaces::init() 
+bool LibInterface::init(std::string libraryName)
 {
-  std::string libs[] = {"libInterp4Set", "libInterp4Move", "libInterp4Rotate", "libInterp4Pause"};
-  std::string lib_path;
-  for (size_t i = 0; i < sizeof(libs) / sizeof(libs[0]); i++)
-  {
-    std::shared_ptr<LibInterface> tmp(new LibInterface());
-    lib_path = libs[i] + ".so";
-    tmp->init(lib_path.c_str());
-    mSet.emplace(libs[i], tmp);
-  }
-  return true;
+
+    _LibHandler = dlopen(libraryName.c_str(), RTLD_LAZY);
+    void* function;
+    const char* (*getCmdName)(void);
+
+    if (!_LibHandler) {
+        std::cerr << "!!! Brak biblioteki: " << libraryName << std::endl;
+        return 1;
+    }
+
+    function = dlsym(_LibHandler, "CreateCmd");
+
+    if (!function) {
+        std::cerr << "!!! Nie znaleziono funkcji CreateCmd w " << libraryName << std::endl;
+        return 1;
+    }
+
+    this->_pCreateCmd = *reinterpret_cast<AbstractInterp4Command* (**)(void)>(&function);
+
+    function = dlsym(_LibHandler, "GetCmdName");
+
+    if (!function) {
+        std::cerr << "!!! Nie znaleziono funkcji GetCmdName w " << libraryName << std::endl;
+        return 1;
+    }
+
+    getCmdName = reinterpret_cast<const char* (*)(void)>(function);
+    _CmdName = getCmdName();
+    return 0;
 }
 
-std::shared_ptr<LibInterface> Set4LibInterfaces::get_interface(std::string lib_name)
+AbstractInterp4Command* LibInterface::CreateCmd()
 {
-  return mSet[lib_name];
+    return _pCreateCmd();
 }
